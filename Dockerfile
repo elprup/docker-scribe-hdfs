@@ -35,11 +35,9 @@ RUN ln -s /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server/libjvm.so /usr/
 
 RUN cd /scribe && ./bootstrap.sh && ./configure --enable-hdfs CPPFLAGS="-DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H -DBOOST_FILESYSTEM_VERSION=2 -I/root/hadoop-1.0.3/src/c++/libhdfs -I/usr/lib/jvm/java-7-openjdk-amd64/include -I/usr/lib/jvm/java-7-openjdk-amd64/include/linux" LIBS="-lboost_system -lboost_filesystem"  && make && make install && cd lib/py && python setup.py install && make distclean
 
-ENV HADOOP_HOME=/root/hadoop-1.0.3
+ENV HADOOP_HOME /root/hadoop-1.0.3
 
-ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
-
-ENV CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath`
+ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 
 RUN mkdir /var/lib/scribe/
 
@@ -50,4 +48,4 @@ EXPOSE 1463
 
 RUN ldconfig
 
-CMD ["/usr/local/bin/scribed", "-c", "/etc/scribe.conf"]
+CMD ["CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath` /usr/local/bin/scribed", "-c", "/etc/scribe.conf"]
